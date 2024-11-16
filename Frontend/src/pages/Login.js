@@ -1,33 +1,65 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import iconGoogle from '../assest/logodegoogle.svg';
+import SummaryApi from '../common'; // Importa la configuración de la API
 
 const Login = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Usamos navigate para redirigir al usuario
   const [data, setData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
 
+  // Manejador de cambios para los inputs
   const handleOnChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     setData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Manejador del submit del formulario
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Formulario de login enviado");
-    navigate(`/login?email=${data.email}&password=${data.password}&rememberMe=${data.rememberMe}`);
+
+    // Enviamos los datos del login al servidor
+    try {
+      const dataResponse = await fetch(SummaryApi.login.url, { // Usamos la URL de login configurada en SummaryApi
+        method: SummaryApi.login.method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          rememberMe: data.rememberMe,
+        }),
+      });
+
+      const responseData = await dataResponse.json();
+      console.log("data", responseData);
+
+      if (responseData.success) {
+        // Si la respuesta es exitosa, almacenamos el token y redirigimos al usuario
+        localStorage.setItem('authToken', responseData.token); // Almacenar el token JWT en el localStorage
+        navigate("/"); // Redirigir a la página de dashboard o alguna página protegida
+      } else {
+        console.log("Error en el login", responseData.message);
+        // Aquí puedes mostrar un mensaje de error si la autenticación falla
+        alert('Error al iniciar sesión: ' + responseData.message);
+      }
+    } catch (error) {
+      console.error("Error en la solicitud de login:", error);
+      alert('Hubo un error al intentar iniciar sesión. Por favor, inténtalo de nuevo.');
+    }
   };
 
   return (
-    <div className="flex flex-col bg-gray-100"> 
-      <div className="relative flex flex-col m-3 space-y-4 bg-white shadow-xl rounded-2xl md:flex-row md:space-y-0 w-full max-w-md p-6 mx-auto flex-1"> {/* Ajustado para encajar en la pantalla */}
+    <div className="flex flex-col bg-gray-100">
+      <div className="relative flex flex-col m-3 space-y-4 bg-white shadow-xl rounded-2xl md:flex-row md:space-y-0 w-full max-w-md p-6 mx-auto flex-1">
         <div className="flex flex-col justify-center w-full">
           <span className="mb-2 text-3xl font-bold text-center md:text-left">Bienvenido de vuelta</span>
           <span className="font-light text-gray-400 mb-4 text-center md:text-left">
@@ -88,7 +120,7 @@ const Login = () => {
               <button 
                 className="w-full border border-gray-300 text-md p-2 rounded-lg mb-4 hover:bg-black hover:text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400"
               >
-                <img src={iconGoogle} alt="img" className="w-6 h-6 inline mr-2" />
+                <img src={iconGoogle} alt="Google" className="w-6 h-6 inline mr-2" />
                 Iniciar sesión con Google
               </button>
 
@@ -107,5 +139,6 @@ const Login = () => {
 };
 
 export default Login;
+
 
 

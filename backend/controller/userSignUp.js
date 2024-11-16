@@ -5,8 +5,6 @@ async function userSignUpController(req, res) {
     try {
         const { email, password, firstName, lastName } = req.body;
 
-        console.log("req.body",req.body)
-
         if (!email) {
             throw new Error("please provide email");
         }
@@ -27,7 +25,8 @@ async function userSignUpController(req, res) {
             email,
             password: hashedPassword,
             firstName,
-            lastName
+            lastName,
+            role: "GENERAL"
         });
 
         await userData.save();
@@ -46,4 +45,4 @@ async function userSignUpController(req, res) {
     }
 }
 
-module.exports = userSignUpController
+module.exports = userSignUpController;

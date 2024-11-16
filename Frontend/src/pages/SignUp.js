@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import iconGoogle from '../assest/logodegoogle.svg';
 import SummaryApi from '../common';
 
@@ -12,6 +12,8 @@ const SignUp = () => {
     confirmPassword: "",
     agreeToTerms: false,
   });
+
+  const navigate = useNavigate(); // Inicializar el hook navigate
 
   const handleOnChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -26,17 +28,33 @@ const SignUp = () => {
 
     if (data.password === data.confirmPassword) {
       try {
+        console.log("SummaryApi.signUP.url", SummaryApi.signUP.url);
+
+        // Realizamos la solicitud para crear la cuenta
         const dataResponse = await fetch(SummaryApi.signUP.url, {
           method: SummaryApi.signUP.method,
           headers: {
             "content-type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(data), // Enviamos los datos del formulario
         });
 
+        // Parseamos la respuesta del servidor
         const responseData = await dataResponse.json();
         console.log("data", responseData);
+
+        // Verificamos si la creación fue exitosa
+        if (responseData.success) {
+          // Si la creación es exitosa, redirigimos al login
+          console.log("Cuenta creada con éxito");
+          navigate("/login"); // Redirigir al login
+        } else {
+          // Si hay algún error, mostramos el mensaje de error
+          console.log("Error al crear la cuenta", responseData.message);
+        }
+        
       } catch (error) {
+        // Si ocurre un error en la solicitud, lo capturamos
         console.error("Error en la solicitud:", error);
       }
     } else {
@@ -161,6 +179,7 @@ const SignUp = () => {
 };
 
 export default SignUp;
+
 
 
 
