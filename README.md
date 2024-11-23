@@ -1,3 +1,5 @@
+React - Tailwind - Node - Express - MongoDB
+
 Para que la App funcione sin errores los servidores de Frontend y Backend deben estar andando
 
 Ir a Frontend en la terminal con: cd Frontend 
