@@ -1,7 +1,7 @@
 import React from 'react'
 import Logo from './Logo'
 import { GrSearch } from "react-icons/gr";
-import { FaRegUserCircle, FaShoppingCart } from "react-icons/fa";
+import { FaRegUserCircle } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 
 
@@ -27,13 +27,6 @@ const Header = () => {
 
           <div className='text-3xl'>
             <FaRegUserCircle/>
-          </div>
-
-          <div className='text-2xl relative'>
-            <span><FaShoppingCart/></span>
-            <div className='bg-yellow-400 w-5 h-5 rounded-full p-1 flex items-center justify-center absolute -top-2 -right-3'>
-              <p className='text-sm'>0</p>
-            </div>
           </div>
 
           <div>
